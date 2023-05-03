@@ -36,3 +36,30 @@ func archiveFiles(filePaths []string) (*bytes.Buffer, error) {
 
 	return buf, nil
 }
+
+func unArchiveFiles(buf *bytes.Buffer) error {
+	reader := bytes.NewReader(buf.Bytes())
+	r, err := zip.NewReader(reader, reader.Size())
+	if err != nil {
+		return err
+	}
+
+	for _, path := range r.File {
+		file, err := os.OpenFile(path.Name, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
+		if err != nil {
+			return err
+		}
+
+		fileFromArchive, err := path.Open()
+		if err != nil {
+			return err
+		}
+
+		_, err = io.Copy(file, fileFromArchive)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}

@@ -13,6 +13,6 @@ type CLI interface {
 
 type Client interface {
 	SendPackage(name, ver string, file *bytes.Buffer) error
-	ReceivePackage(name, ver string) error
+	ReceivePackage(name, ver string) (*bytes.Buffer, error)
 	Close()
 }

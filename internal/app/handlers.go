@@ -2,7 +2,6 @@ package app
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/pkg/errors"
 )
 
@@ -53,12 +52,15 @@ func (s *service) Update(path string) error {
 		return errors.Wrap(err, "json unmarshal")
 	}
 
-	fmt.Println(packages)
-
 	for _, pack := range packages.Packages {
-		err = s.client.ReceivePackage(pack.Name, pack.Ver)
+		buf, err := s.client.ReceivePackage(pack.Name, pack.Ver)
 		if err != nil {
 			return errors.Wrap(err, "receive package")
+		}
+
+		err = unArchiveFiles(buf)
+		if err != nil {
+			return errors.Wrap(err, "unArchive package")
 		}
 	}
 
