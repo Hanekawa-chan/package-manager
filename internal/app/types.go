@@ -33,6 +33,11 @@ type PackagePacket struct {
 	Ver  string `json:"ver,omitempty"`
 }
 
+type Dependency struct {
+	Name string `json:"name"`
+	Data []byte `json:"data"`
+}
+
 func (t *Target) UnmarshalJSON(data []byte) error {
 	fakeTarget := struct {
 		Path    string `json:"path"`

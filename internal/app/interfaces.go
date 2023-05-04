@@ -14,5 +14,7 @@ type CLI interface {
 type Client interface {
 	SendPackage(name, ver string, file *bytes.Buffer) error
 	ReceivePackage(name, ver string) (*bytes.Buffer, error)
+	ReceivePackageByVersionPattern(name, ver string) (buf *bytes.Buffer, version string, err error)
+	ReceivePackageLatest(name string) (buf *bytes.Buffer, version string, err error)
 	Close()
 }

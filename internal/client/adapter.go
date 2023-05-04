@@ -11,14 +11,14 @@ type adapter struct {
 
 func New() (app.Client, error) {
 	config := &ssh.ClientConfig{
-		User: "",
+		User: "adachi",
 		Auth: []ssh.AuthMethod{
-			ssh.Password(""),
+			ssh.Password("inadequate"),
 		},
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
 	}
 
-	client, err := ssh.Dial("tcp", "localhost:5555", config)
+	client, err := ssh.Dial("tcp", "localhost:2222", config)
 	if err != nil {
 		return nil, err
 	}

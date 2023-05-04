@@ -3,6 +3,7 @@ package app
 import (
 	"encoding/json"
 	"github.com/pkg/errors"
+	"strings"
 )
 
 func (s *service) Create(path string) error {
@@ -25,6 +26,16 @@ func (s *service) Create(path string) error {
 			return errors.Wrap(err, "find paths to targets")
 		}
 		files = append(files, newFiles...)
+	}
+
+	dependencies := make([]Dependency, len(packet.Packets))
+
+	for i, pack := range packet.Packets {
+		//TODO
+		dependencies[i] = Dependency{
+			Name: pack.Name,
+			Data: nil,
+		}
 	}
 
 	buf, err := archiveFiles(files)
@@ -53,14 +64,37 @@ func (s *service) Update(path string) error {
 	}
 
 	for _, pack := range packages.Packages {
-		buf, err := s.client.ReceivePackage(pack.Name, pack.Ver)
-		if err != nil {
-			return errors.Wrap(err, "receive package")
-		}
+		name := pack.Name
+		if pack.Ver == "" {
+			buf, version, err := s.client.ReceivePackageLatest(pack.Name)
+			if err != nil {
+				return errors.Wrap(err, "receive latest package")
+			}
 
-		err = unArchiveFiles(buf)
-		if err != nil {
-			return errors.Wrap(err, "unArchive package")
+			err = unArchiveFiles(name+"/"+version+"/", buf)
+			if err != nil {
+				return errors.Wrap(err, "unArchive latest package")
+			}
+		} else if strings.ContainsAny(pack.Ver, "><=") {
+			buf, version, err := s.client.ReceivePackageByVersionPattern(pack.Name, pack.Ver)
+			if err != nil {
+				return errors.Wrap(err, "receive version patterned package")
+			}
+
+			err = unArchiveFiles(name+"/"+version+"/", buf)
+			if err != nil {
+				return errors.Wrap(err, "unArchive version patterned package")
+			}
+		} else {
+			buf, err := s.client.ReceivePackage(pack.Name, pack.Ver)
+			if err != nil {
+				return errors.Wrap(err, "receive package")
+			}
+
+			err = unArchiveFiles(name+"/"+pack.Ver+"/", buf)
+			if err != nil {
+				return errors.Wrap(err, "unArchive package")
+			}
 		}
 	}
 
