@@ -1,0 +1,9 @@
+{
+  "name": "packet-2",
+  "ver": "2.0",
+  "targets": [
+    "./example/archive_this1/*.txt",
+    {"path": "./example/archive_this2/*", "exclude": "*.tmp"},
+    {"path": "./example/packet-0.5.json"}
+  ]
+}
