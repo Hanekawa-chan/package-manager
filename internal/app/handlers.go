@@ -2,6 +2,7 @@ package app
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/pkg/errors"
 	"strings"
 )
@@ -27,6 +28,8 @@ func (s *service) Create(path string) error {
 		}
 		files = append(files, newFiles...)
 	}
+
+	fmt.Println(files)
 
 	dependencies := make([]Dependency, len(packet.Packets))
 
@@ -64,7 +67,7 @@ func (s *service) Update(path string) error {
 	}
 
 	for _, pack := range packages.Packages {
-		name := pack.Name
+		name := "packages/" + pack.Name
 		if pack.Ver == "" {
 			buf, version, err := s.client.ReceivePackageLatest(pack.Name)
 			if err != nil {

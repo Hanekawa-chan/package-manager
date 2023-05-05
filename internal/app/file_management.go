@@ -27,6 +27,11 @@ func readFileContents(path string) ([]byte, error) {
 func findPaths(path, excludePattern string) ([]string, error) {
 	var paths []string
 	path, pattern := separatePathAndPattern(path)
+	if pattern == "" {
+		paths = append(paths, path)
+
+		return paths, nil
+	}
 
 	err := filepath.WalkDir(path, func(pathToAdd string, entry fs.DirEntry, e error) error {
 		if e != nil {
