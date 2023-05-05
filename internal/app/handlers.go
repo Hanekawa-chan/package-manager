@@ -2,7 +2,6 @@ package app
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/pkg/errors"
 	"strings"
 )
@@ -28,8 +27,6 @@ func (s *service) Create(path string) error {
 		}
 		files = append(files, newFiles...)
 	}
-
-	fmt.Println(files)
 
 	dependencies := make([]Dependency, len(packet.Packets))
 

@@ -49,17 +49,12 @@ func unArchiveFiles(prefix string, buf *bytes.Buffer) error {
 		path.Name = strings.ReplaceAll(path.Name, "\\", "/")
 		lastSlashIndex := strings.LastIndex(path.Name, "/")
 
-		err = os.RemoveAll(prefix)
-		if err != nil {
-			return err
-		}
-
 		err = os.MkdirAll(prefix+path.Name[:lastSlashIndex], os.ModeAppend)
 		if err != nil {
 			return err
 		}
 
-		file, err := os.OpenFile(prefix+path.Name, os.O_APPEND|os.O_WRONLY|os.O_CREATE, 0644)
+		file, err := os.OpenFile(prefix+path.Name, os.O_WRONLY|os.O_CREATE, 0644)
 		if err != nil {
 			return err
 		}
